@@ -1,13 +1,12 @@
-use image::DynamicImage;
+use image::RgbaImage;
 
-pub fn open(path: &str) -> DynamicImage {
-    return image::open(path).unwrap();
+pub fn open(path: &str) -> RgbaImage {
+    return image::open(path).unwrap().to_rgba();
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use image::GenericImageView;
 
     #[test]
     fn test_open() {

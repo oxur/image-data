@@ -1,5 +1,5 @@
-pub use self::band::*;
+pub use self::color::*;
 pub use self::io::*;
 
-pub mod band;
+pub mod color;
 pub mod io;
