@@ -14,9 +14,7 @@ edition = "2018"
 name = "imgdata"
 
 [dependencies]
+ansi_term = "0.12.1"
 image = "0.23.4"
 ron = "0.5.1"
 serde = { version = "1", features = ["serde_derive"] }
-
-[dev-dependencies]
-ansi_term = "0.12.1"

@@ -1,4 +1,5 @@
-use crate::color;
+use crate::color::{self, Color};
+use ansi_term::Colour::RGB;
 use image::{Rgba, RgbaImage};
 use ron;
 use serde::{Deserialize, Serialize};
@@ -41,6 +42,38 @@ pub fn read(path: &str) -> ColorFile {
         }
     };
     return color_file;
+}
+
+pub struct Manager {
+    pub image: RgbaImage,
+    pub color_file: ColorFile,
+}
+
+pub struct ManagerOptions {
+    pub image_path: String,
+    pub color_file_path: String,
+}
+
+impl Manager {
+    pub fn new(opts: ManagerOptions) -> Manager {
+        return Manager {
+            image: open(&opts.image_path[..]),
+            color_file: read(&opts.color_file_path[..]),
+        };
+    }
+
+    pub fn show_names(&self) {
+        let map = self.color_file.create_lookup();
+
+        for pixel in self.image.pixels() {
+            let c = RGB(pixel.r(), pixel.g(), pixel.b()).paint("██");
+            match map.get(&pixel) {
+                Some(&name) => print!("{} {} :: ", c, name),
+                _ => println!("Color {:?} not found in lookup ...", pixel),
+            }
+        }
+        println!();
+    }
 }
 
 #[cfg(test)]
