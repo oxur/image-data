@@ -1,5 +1,4 @@
 use crate::color::{self, Color};
-use ansi_term::Colour::RGB;
 use image::{Rgba, RgbaImage};
 use ron;
 use serde::{Deserialize, Serialize};
@@ -65,9 +64,31 @@ impl Manager {
         };
     }
 
+    pub fn get(&self, x: u32, y: u32) -> PixelData {
+        let pixel = self.image.get_pixel(x, y);
+        match self.lookup.get(&pixel) {
+            Some(name) => {
+                return PixelData {
+                    x: x,
+                    y: y,
+                    color: pixel.clone(),
+                    color_name: name.clone(),
+                }
+            }
+            _ => {
+                return PixelData {
+                    x: x,
+                    y: y,
+                    color: pixel.clone(),
+                    color_name: String::from("UNKNOWN"),
+                }
+            }
+        }
+    }
+
     pub fn show_names(&self) {
         for pixel in self.image.pixels() {
-            let c = RGB(pixel.r(), pixel.g(), pixel.b()).paint("██");
+            let c = pixel.paint("██");
             match self.lookup.get(&pixel) {
                 Some(name) => print!("{} {} :: ", c, name),
                 _ => println!("Color {:?} not found in lookup ...", pixel),
@@ -113,13 +134,27 @@ mod tests {
         let c2 = color::from_hex(String::from("#abc123").clone());
 
         match lu.get(&c1) {
-            Some(&name) => assert_eq!(name, "thing1"),
+            Some(name) => assert_eq!(name.clone(), "thing1"),
             _ => panic!("WAT"),
         }
 
         match lu.get(&c2) {
-            Some(&name) => assert_eq!(name, "thing2"),
+            Some(name) => assert_eq!(name.clone(), "thing2"),
             _ => panic!("WUT"),
         }
+    }
+
+    #[test]
+    fn test_manager_get() {
+        let opts = ManagerOptions {
+            image_path: String::from("src/test-image.png"),
+            color_file_path: String::from("src/test-color-file.ron"),
+        };
+        let manager = Manager::new(opts);
+        let pixel_data = manager.get(0, 0);
+        assert_eq!(pixel_data.x, 0);
+        assert_eq!(pixel_data.y, 0);
+        assert_eq!(pixel_data.color.rgba(), [255, 0, 0, 255]);
+        assert_eq!(pixel_data.color_name, "red");
     }
 }

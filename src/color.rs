@@ -1,3 +1,4 @@
+use ansi_term::Colour::RGB;
 use image::Rgba;
 use std::i64;
 
@@ -15,6 +16,7 @@ pub trait Color {
     fn rgba(&self) -> [u8; 4];
     fn hex(&self) -> String;
     fn hexa(&self) -> String;
+    fn paint(&self, text: &str) -> String;
 }
 
 impl Color for Rgba<u8> {
@@ -48,6 +50,10 @@ impl Color for Rgba<u8> {
 
     fn hexa(&self) -> String {
         _to_hex(&self.rgba())
+    }
+
+    fn paint(&self, text: &str) -> String {
+        return RGB(self.r(), self.g(), self.b()).paint(text).to_string();
     }
 }
 
