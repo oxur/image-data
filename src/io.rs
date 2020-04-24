@@ -10,24 +10,24 @@ pub fn open(path: &str) -> RgbaImage {
     return image::open(path).unwrap().to_rgba();
 }
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct ColorEntry {
     pub name: String,
     // Color is a hexidecimal 3-component, RGB color with no alpha
     pub color: String,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct ColorFile {
     pub entries: Vec<ColorEntry>,
 }
 
 impl ColorFile {
-    pub fn create_lookup(&self) -> HashMap<Rgba<u8>, &str> {
+    pub fn create_lookup(&self) -> HashMap<Rgba<u8>, String> {
         let mut lookup = HashMap::new();
         for color_entry in self.entries.iter() {
             let c = color::from_hex(color_entry.color.clone());
-            lookup.insert(c, &color_entry.name[..]);
+            lookup.insert(c, color_entry.name.clone());
         }
         return lookup;
     }
@@ -47,6 +47,7 @@ pub fn read(path: &str) -> ColorFile {
 pub struct Manager {
     pub image: RgbaImage,
     pub color_file: ColorFile,
+    pub lookup: HashMap<Rgba<u8>, String>,
 }
 
 pub struct ManagerOptions {
@@ -56,24 +57,31 @@ pub struct ManagerOptions {
 
 impl Manager {
     pub fn new(opts: ManagerOptions) -> Manager {
+        let cf = read(&opts.color_file_path[..]);
         return Manager {
             image: open(&opts.image_path[..]),
-            color_file: read(&opts.color_file_path[..]),
+            color_file: cf.clone(),
+            lookup: cf.create_lookup(),
         };
     }
 
     pub fn show_names(&self) {
-        let map = self.color_file.create_lookup();
-
         for pixel in self.image.pixels() {
             let c = RGB(pixel.r(), pixel.g(), pixel.b()).paint("██");
-            match map.get(&pixel) {
-                Some(&name) => print!("{} {} :: ", c, name),
+            match self.lookup.get(&pixel) {
+                Some(name) => print!("{} {} :: ", c, name),
                 _ => println!("Color {:?} not found in lookup ...", pixel),
             }
         }
         println!();
     }
+}
+
+pub struct PixelData {
+    pub x: u32,
+    pub y: u32,
+    pub color: Rgba<u8>,
+    pub color_name: String,
 }
 
 #[cfg(test)]
