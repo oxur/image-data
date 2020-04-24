@@ -13,6 +13,12 @@
 
 TBD
 
+## Credits
+
+The project logo is derived from a combination of the "media-flash" icon and
+the "image viewer" icon in the
+[Ubuntu Yaru icon set](https://github.com/ubuntu/yaru).
+
 ## License
 
 Copyright © 2020, Oxur Group
