@@ -66,7 +66,8 @@ fn _to_hex(hex: &[u8]) -> String {
 }
 
 fn _from_hex(hex: String) -> [u8; 4] {
-    let num = i64::from_str_radix(&hex.trim_start_matches("0x"), 16).unwrap();
+    let trimmed_hex = hex.trim_start_matches("0x").trim_start_matches("#");
+    let num = i64::from_str_radix(&trimmed_hex, 16).unwrap();
     let r_mask = 0xff0000;
     let g_mask = 0x00ff00;
     let b_mask = 0x0000ff;
@@ -77,7 +78,8 @@ fn _from_hex(hex: String) -> [u8; 4] {
 }
 
 fn _from_hexa(hex: String) -> [u8; 4] {
-    let num = i64::from_str_radix(&hex.trim_start_matches("0x"), 16).unwrap();
+    let trimmed_hex = hex.trim_start_matches("0x").trim_start_matches("#");
+    let num = i64::from_str_radix(&trimmed_hex, 16).unwrap();
     let r_mask = 0xff000000;
     let g_mask = 0x00ff0000;
     let b_mask = 0x0000ff00;
@@ -144,12 +146,14 @@ mod tests {
     fn test_private_from_hex() {
         assert_eq!(_from_hex(String::from("336699")), [51, 102, 153, 255]);
         assert_eq!(_from_hex(String::from("0x336699")), [51, 102, 153, 255]);
+        assert_eq!(_from_hex(String::from("#336699")), [51, 102, 153, 255]);
     }
 
     #[test]
     fn test_private_from_hexa() {
         assert_eq!(_from_hexa(String::from("336699ff")), [51, 102, 153, 255]);
         assert_eq!(_from_hexa(String::from("0x336699ff")), [51, 102, 153, 255]);
+        assert_eq!(_from_hexa(String::from("#336699ff")), [51, 102, 153, 255]);
     }
 
     #[test]
@@ -158,6 +162,8 @@ mod tests {
         assert_eq!(pixel.rgb(), [51, 102, 153]);
         let pixel = from_hex(String::from("0x336699"));
         assert_eq!(pixel.rgb(), [51, 102, 153]);
+        let pixel = from_hex(String::from("#336699"));
+        assert_eq!(pixel.rgb(), [51, 102, 153]);
     }
 
     #[test]
@@ -165,6 +171,8 @@ mod tests {
         let pixel = from_hexa(String::from("33669933"));
         assert_eq!(pixel.rgba(), [51, 102, 153, 51]);
         let pixel = from_hexa(String::from("0x33669966"));
+        assert_eq!(pixel.rgba(), [51, 102, 153, 102]);
+        let pixel = from_hexa(String::from("#33669966"));
         assert_eq!(pixel.rgba(), [51, 102, 153, 102]);
     }
 }

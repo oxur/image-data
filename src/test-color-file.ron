@@ -1,0 +1,18 @@
+(
+    entries: [
+        (
+            name: "thing1",
+            hex: Some("#123abc"),
+            hexa: None,
+            rgb: None,
+            rgba: None,
+        ),
+        (
+            name: "thing2",
+            hex: None,
+            exa: None,
+            rgb: Some((171,193,35)),
+            rgba: None,
+        ),
+    ],
+)
