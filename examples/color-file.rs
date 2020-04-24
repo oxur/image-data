@@ -6,13 +6,11 @@ use std::io::prelude::*;
 fn main() -> std::io::Result<()> {
     let e1 = ColorEntry {
         name: String::from("thing1"),
-        hex: Some(String::from("#123abc")),
-        ..Default::default()
+        color: String::from("#123abc"),
     };
     let e2 = ColorEntry {
         name: String::from("thing2"),
-        rgb: Some((171, 193, 35)),
-        ..Default::default()
+        color: String::from("#abc123"),
     };
     let cf = ColorFile {
         entries: vec![e1, e2],

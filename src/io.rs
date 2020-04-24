@@ -10,10 +10,8 @@ pub fn open(path: &str) -> RgbaImage {
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct ColorEntry {
     pub name: String,
-    pub hex: Option<String>,
-    pub hexa: Option<String>,
-    pub rgb: Option<(u8, u8, u8)>,
-    pub rgba: Option<(u8, u8, u8, u8)>,
+    // Color is a hexidecimal 3-component, RGB color with no alpha
+    pub color: String,
 }
 
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -47,8 +45,8 @@ mod tests {
         let color_file = read("src/test-color-file.ron");
 
         assert_eq!(color_file.entries[0].name, "thing1");
-        assert_eq!(color_file.entries[0].hex.as_ref().unwrap(), "#123abc");
+        assert_eq!(color_file.entries[0].color, "#123abc");
         assert_eq!(color_file.entries[1].name, "thing2");
-        assert_eq!(color_file.entries[1].rgb.unwrap(), (171, 193, 35));
+        assert_eq!(color_file.entries[1].color, "#abc123");
     }
 }
