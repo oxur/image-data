@@ -1,10 +1,10 @@
-use imgdata::io;
+use imgdata::manager;
 
 fn main() {
-    let opts = io::ManagerOptions {
+    let opts = manager::ManagerOptions {
         image_path: String::from("examples/biomes/biomes.png"),
         color_file_path: String::from("examples/biomes/colors.ron"),
     };
-    let manager = io::Manager::new(opts);
+    let manager = manager::Manager::new(opts);
     manager.show_names();
 }
