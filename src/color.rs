@@ -1,5 +1,6 @@
 use ansi_term::Colour::RGB;
 use image::Rgba;
+use std::cmp;
 use std::i64;
 
 const R: usize = 0;
@@ -17,6 +18,7 @@ pub trait Color {
     fn hex(&self) -> String;
     fn hexa(&self) -> String;
     fn paint(&self, text: &str) -> String;
+    fn compare(&self, other: &Rgba<u8>) -> cmp::Ordering;
 }
 
 impl Color for Rgba<u8> {
@@ -54,6 +56,15 @@ impl Color for Rgba<u8> {
 
     fn paint(&self, text: &str) -> String {
         return RGB(self.r(), self.g(), self.b()).paint(text).to_string();
+    }
+
+    fn compare(&self, other: &Rgba<u8>) -> cmp::Ordering {
+        self.rgba()
+            .iter()
+            .zip(other.rgba().iter())
+            .map(|(a, b)| a.cmp(b))
+            .find(|&ord| ord != cmp::Ordering::Equal)
+            .unwrap_or(self.rgba().len().cmp(&other.rgba().len()))
     }
 }
 

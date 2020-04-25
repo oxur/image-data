@@ -6,7 +6,11 @@ fn main() {
         color_file_path: String::from("examples/biomes/colors.ron"),
     };
     let manager = manager::Manager::new(opts);
-    for name in manager.color_names() {
-        println!("{}", name);
+    for rgb in manager.unique_rgb_colors() {
+        print!("{:?} ", rgb);
     }
+    for hex in manager.unique_hex_colors() {
+        print!("{} ", hex);
+    }
+    println!()
 }

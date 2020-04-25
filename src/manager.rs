@@ -1,6 +1,7 @@
 use crate::color::Color;
 use crate::io;
 use image::{Rgba, RgbaImage};
+use itertools::Itertools;
 use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
@@ -54,10 +55,6 @@ impl Manager {
         return hasher.finish();
     }
 
-    pub fn colors_rgb(&self) -> Vec<[u8; 3]> {
-        self.lookup.keys().map(|x| x.rgb()).collect()
-    }
-
     pub fn colors_hex(&self) -> Vec<String> {
         self.lookup
             .keys()
@@ -65,8 +62,30 @@ impl Manager {
             .collect()
     }
 
+    pub fn colors_rgb(&self) -> Vec<[u8; 3]> {
+        self.lookup.keys().map(|x| x.rgb()).collect()
+    }
+
     pub fn color_names(&self) -> Vec<String> {
         self.lookup.values().map(|x| x.clone()).collect()
+    }
+
+    pub fn unique_hex_colors(&self) -> Vec<String> {
+        self.image
+            .pixels()
+            .sorted_by(|a, b| a.compare(&b))
+            .dedup()
+            .map(|x| format!("0x{}", x.hex()))
+            .collect()
+    }
+
+    pub fn unique_rgb_colors(&self) -> Vec<[u8; 3]> {
+        self.image
+            .pixels()
+            .sorted_by(|a, b| a.compare(&b))
+            .dedup()
+            .map(|x| x.rgb())
+            .collect()
     }
 
     pub fn show_names(&self) {

@@ -13,10 +13,16 @@ jobs:
       run: cargo build
     - name: Run tests
       run: cargo test
-    - name: Run Demo (color file)
-      run: cargo run --example=color-file
     - name: Run Demo (biomes)
       run: cargo run --example=biomes
+    - name: Run Demo (color extraction)
+      run: cargo run --example=color-extraction
+    - name: Run Demo (color file)
+      run: cargo run --example=color-file
+    - name: Run Demo (color names)
+      run: cargo run --example=color-names
+    - name: Run Demo (colors)
+      run: cargo run --example=colors
     - name: Notify CI/CD Slack Channel
       uses: innocarpe/actions-slack@v1
       with:
