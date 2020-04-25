@@ -11,7 +11,65 @@
 
 ## About
 
-TBD
+This project aims to provide convenient functions, stuctures, and methods for
+working with PNG image pixes as data, with ability to map these pixels' color
+values to names.
+
+Projects that would benefit most from this functioality would be those that
+want to utilize PNG images as data layers in applications or services.
+
+## Example Usage
+
+There are examples that cover various use cases in the
+[examples dir](./examples). For instance:
+
+```rust
+use imgdata::{ColorEntry, ColorFile, manager};
+
+fn main() -> std::io::Result<()> {
+    let opts = manager::ManagerOptions {
+        image_path: String::from("examples/biomes/biomes.png"),
+        color_file_path: String::from("examples/biomes/colors.ron"),
+    };
+    let manager = manager::Manager::new(opts);
+
+    // Extract unique colors from the source image:
+    for rgb in manager.unique_rgb_colors() {
+        print!("{:?} ", rgb);
+    }
+    for hex in manager.unique_hex_colors() {
+        print!("{} ", hex);
+    }
+
+    // Get the list of canonical color names from the color file:
+    for name in manager.color_names() {
+        println!("{}", name);
+    }
+
+    // Get the list of canonical colors from the color file:
+    for rgb in manager.colors_rgb() {
+        print!("{:?} ", rgb);
+    }
+    for hex in manager.colors_hex() {
+        print!("{:?} ", hex);
+    }
+
+    // Create a new color file:
+    let e1 = ColorEntry {
+        name: String::from("thing1"),
+        color: String::from("#123abc"),
+    };
+    let e2 = ColorEntry {
+        name: String::from("thing2"),
+        color: String::from("#abc123"),
+    };
+    let cf = ColorFile {
+        entries: vec![e1, e2],
+    };
+    cf.write("examples/example-color-file.ron")?;
+    Ok(())
+}
+```
 
 ## Credits
 
