@@ -4,6 +4,7 @@ use ron;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs::File;
+use std::io::{self, Write};
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct ColorEntry {
@@ -33,6 +34,17 @@ pub struct ColorFile {
 }
 
 impl ColorFile {
+    pub fn new(colors: Vec<String>) -> ColorFile {
+        ColorFile {
+            entries: colors
+                .iter()
+                .map(|x| ColorEntry {
+                    name: String::from(""),
+                    color: x.clone(),
+                })
+                .collect(),
+        }
+    }
     pub fn create_lookup(&self) -> HashMap<Rgba<u8>, String> {
         let mut lookup = HashMap::new();
         for color_entry in self.entries.iter() {
@@ -40,6 +52,17 @@ impl ColorFile {
             lookup.insert(c, color_entry.name.clone());
         }
         return lookup;
+    }
+
+    pub fn write(&self, path: &str) -> io::Result<()> {
+        let serialized = ron::ser::to_string(self).expect("Serialization failed");
+        match File::create(path) {
+            Ok(mut file) => {
+                file.write_all(serialized.as_bytes())?;
+                Ok(())
+            }
+            _ => panic!("Could not write color file!"),
+        }
     }
 }
 
@@ -61,6 +84,15 @@ mod tests {
         assert_eq!(color_file.entries[0].color, "#123abc");
         assert_eq!(color_file.entries[1].name, "thing2");
         assert_eq!(color_file.entries[1].color, "#abc123");
+    }
+
+    #[test]
+    fn test_new_color_file() {
+        let color_file = ColorFile::new(vec![String::from("#abc123"), String::from("#123abc")]);
+        assert_eq!(color_file.entries[0].name, "");
+        assert_eq!(color_file.entries[0].color, "#abc123");
+        assert_eq!(color_file.entries[1].name, "");
+        assert_eq!(color_file.entries[1].color, "#123abc");
     }
 
     #[test]
