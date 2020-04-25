@@ -54,6 +54,21 @@ impl Manager {
         return hasher.finish();
     }
 
+    pub fn colors_rgb(&self) -> Vec<[u8; 3]> {
+        self.lookup.keys().map(|x| x.rgb()).collect()
+    }
+
+    pub fn colors_hex(&self) -> Vec<String> {
+        self.lookup
+            .keys()
+            .map(|x| format!("0x{}", x.hex()))
+            .collect()
+    }
+
+    pub fn color_names(&self) -> Vec<String> {
+        self.lookup.values().map(|x| x.clone()).collect()
+    }
+
     pub fn show_names(&self) {
         for pixel in self.image.pixels() {
             let c = pixel.paint("██");
