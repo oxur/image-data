@@ -2,7 +2,7 @@
 name = "image-data"
 description = "Process image band values as data, for use in procedural generation projects"
 readme = "README.md"
-version = "0.1.0"
+version = "0.2.0"
 license = "MIT"
 authors = ["Duncan McGreggor <oubiwann@gmail.com>"]
 repository = "https://github.com/oxur/image-data"
