@@ -12,7 +12,7 @@
 ## About
 
 This project aims to provide convenient functions, stuctures, and methods for
-working with PNG image pixes as data, with ability to map these pixels' color
+working with PNG image pixels as data, with ability to map these pixels' color
 values to names.
 
 Projects that would benefit most from this functioality would be those that
